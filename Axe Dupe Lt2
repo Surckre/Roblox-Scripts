@@ -1,0 +1,206 @@
+-- Objects
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local LoadSlot = Instance.new("TextButton")
+local Slot = Instance.new("TextBox")
+local DelayBox = Instance.new("TextBox")
+local DropAxesButton = Instance.new("TextButton")
+local ScriptLabel = Instance.new("TextLabel")
+local InventoryButton = Instance.new("TextButton") -- New Button
+
+-- Properties
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+MainFrame.Name = "LT2SimpleGui"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1) -- Dark background
+MainFrame.BorderSizePixel = 2
+MainFrame.Position = UDim2.new(0.5, -100, 0.5, -220)
+MainFrame.Size = UDim2.new(0, 200, 0, 220) -- Adjusted size to fit new button
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+-- ScriptLabel properties
+ScriptLabel.Name = "ScriptLabel"
+ScriptLabel.Parent = MainFrame
+ScriptLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+ScriptLabel.BorderSizePixel = 0
+ScriptLabel.Position = UDim2.new(0, 0, 0, 0)
+ScriptLabel.Size = UDim2.new(1, 0, 0, 20)
+ScriptLabel.Font = Enum.Font.SourceSans
+ScriptLabel.Text = "Script by Surckre"
+ScriptLabel.TextColor3 = Color3.new(1, 1, 1)
+ScriptLabel.TextSize = 14
+ScriptLabel.TextStrokeTransparency = 0.8
+
+-- Slot TextBox
+Slot.Name = "Slot"
+Slot.Parent = MainFrame
+Slot.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+Slot.BorderSizePixel = 1
+Slot.Position = UDim2.new(0, 10, 0, 30)
+Slot.Size = UDim2.new(0, 180, 0, 30)
+Slot.Font = Enum.Font.SourceSans
+Slot.Text = "Slot Number"
+Slot.TextColor3 = Color3.new(1, 1, 1)
+Slot.TextSize = 14
+
+-- DelayBox TextBox
+DelayBox.Name = "DelayBox"
+DelayBox.Parent = MainFrame
+DelayBox.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+DelayBox.BorderSizePixel = 1
+DelayBox.Position = UDim2.new(0, 10, 0, 70)
+DelayBox.Size = UDim2.new(0, 180, 0, 30)
+DelayBox.Font = Enum.Font.SourceSans
+DelayBox.Text = "Delay in Seconds"
+DelayBox.TextColor3 = Color3.new(1, 1, 1)
+DelayBox.TextSize = 14
+
+-- DropAxesButton button
+DropAxesButton.Name = "DropAxesButton"
+DropAxesButton.Parent = MainFrame
+DropAxesButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+DropAxesButton.BorderSizePixel = 1
+DropAxesButton.Position = UDim2.new(0, 10, 0, 110)
+DropAxesButton.Size = UDim2.new(0, 180, 0, 30)
+DropAxesButton.Font = Enum.Font.SourceSans
+DropAxesButton.Text = "Drop Axes"
+DropAxesButton.TextColor3 = Color3.new(1, 1, 1)
+DropAxesButton.TextSize = 14
+
+-- LoadSlot button
+LoadSlot.Name = "LoadSlot"
+LoadSlot.Parent = MainFrame
+LoadSlot.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+LoadSlot.BorderSizePixel = 1
+LoadSlot.Position = UDim2.new(0, 10, 0, 150)
+LoadSlot.Size = UDim2.new(0, 180, 0, 30)
+LoadSlot.Font = Enum.Font.SourceSans
+LoadSlot.Text = "Start Dupe"
+LoadSlot.TextColor3 = Color3.new(1, 1, 1)
+LoadSlot.TextSize = 14
+
+-- InventoryButton button (new button)
+InventoryButton.Name = "InventoryButton"
+InventoryButton.Parent = MainFrame
+InventoryButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+InventoryButton.BorderSizePixel = 1
+InventoryButton.Position = UDim2.new(0, 10, 0, 190) -- Position below existing buttons
+InventoryButton.Size = UDim2.new(0, 180, 0, 30)
+InventoryButton.Font = Enum.Font.SourceSans
+InventoryButton.Text = "Show and Reduce Inventory"
+InventoryButton.TextColor3 = Color3.new(1, 1, 1)
+InventoryButton.TextSize = 14
+
+-- Locals
+local ScriptLoadOrSave = false
+
+-- Functions
+local function SendNotification(Title, Text, Duration)
+    game.StarterGui:SetCore("SendNotification", {
+        Title = Title;
+        Text = Text;
+        Icon = nil;
+        Duration = Duration
+    })
+end
+
+local function CheckSlotNumber()
+    local SlotNumber = tonumber(Slot.Text)
+    return SlotNumber and SlotNumber >= 1 and SlotNumber <= 6 and SlotNumber or false
+end
+
+local function CheckIfSlotAvailable(Slot)
+    for a, b in pairs(game.ReplicatedStorage.LoadSaveRequests.GetMetaData:InvokeServer(game.Players.LocalPlayer)) do 
+        if a == Slot then 
+            return b.NumSaves and b.NumSaves ~= 0 or false
+        end
+    end
+    return false
+end
+
+local function GetDelay()
+    local Delay = tonumber(DelayBox.Text)
+    return Delay and Delay > 0 and Delay or 2 -- Defaults to 2 seconds if input is invalid
+end
+
+-- Drop all axes function
+local function DropAllAxes()
+    local axesDropped = 0
+    for _, axe in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if axe:IsA("Tool") and axe.Name ~= "BlueprintTool" then
+            game.ReplicatedStorage.Interaction.ClientInteracted:FireServer(axe, "Drop tool", game.Players.LocalPlayer.Character.Head.CFrame)
+            axesDropped = axesDropped + 1
+            wait(0.5) -- Small delay between each drop to avoid lag
+        end
+    end
+    SendNotification("Axes Dropped", "Dropped " .. axesDropped .. " Axes", 5)
+end
+
+-- Show and reduce inventory count function
+local function ShowAndReduceInventory()
+    local player = game.Players.LocalPlayer
+    local backpack = player.Backpack
+    local itemCount = #backpack:GetChildren()
+
+    -- Display the current inventory count minus 1
+    local reducedCount = itemCount - 1
+    SendNotification("Axes in Inventory", "Axes in Inventory: " .. reducedCount, 5)
+end
+
+-- Button functions
+LoadSlot.MouseButton1Down:Connect(function()
+    local CheckSlot = CheckSlotNumber()
+    local Delay = GetDelay()
+
+    if CheckSlot then
+        if CheckIfSlotAvailable(CheckSlot) then
+            ScriptLoadOrSave = true
+
+            -- Teleport player to new coordinates
+            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(10000, 10, 100))
+            SendNotification("Teleport Notification", "Teleported to coordinates", 2)
+
+            -- Wait for user-defined time
+            wait(Delay)
+            
+            -- Reload slot
+            local result = game.ReplicatedStorage.LoadSaveRequests.RequestLoad:InvokeServer(CheckSlot)
+            if result then
+                SendNotification("Reload Notification", "Slot reloaded successfully", 2)
+            else
+                SendNotification("Reload Error", "Failed to reload slot", 2)
+            end
+            
+            ScriptLoadOrSave = false
+        else
+            SendNotification("Slot Not Available", "Choose another slot", 2)
+        end
+    else
+        SendNotification("Incorrect Slot", "Enter a valid number (1-6) in the slot field", 1)
+    end
+end)
+
+DropAxesButton.MouseButton1Down:Connect(function()
+    DropAllAxes()
+end)
+
+InventoryButton.MouseButton1Down:Connect(function()
+    ShowAndReduceInventory()
+end)
+
+-- Color change for the border
+local function ChangeBorderColor()
+    while true do
+        for i = 0, 1, 0.01 do
+            MainFrame.BorderColor3 = Color3.fromHSV(i, 0.7, 1)
+            wait(0.05)
+        end
+    end
+end
+
+-- Start color change
+spawn(ChangeBorderColor)
