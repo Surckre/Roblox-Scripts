@@ -1,2 +1,270 @@
+--[[
+ .____                  ________ ___.    _____                           __                
+ |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
+ |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
+ |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
+ |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
+         \/          \/         \/    \/                \/     \/     \/                   
+          \_Welcome to LuaObfuscator.com   (Alpha 0.10.7) ~  Much Love, Ferib 
 
-local v0=Instance.new("ScreenGui");local v1=Instance.new("Frame");local v2=Instance.new("TextButton");local v3=Instance.new("TextBox");local v4=Instance.new("TextBox");local v5=Instance.new("TextButton");local v6=Instance.new("TextLabel");local v7=Instance.new("TextButton");v0.Parent=game.CoreGui;v0.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v1.Name="LT2SimpleGui";v1.Parent=v0;v1.BackgroundColor3=Color3.new(0.1,0.1,0.1);v1.BorderSizePixel=2;v1.Position=UDim2.new(0.5, -100,0.5, -220);v1.Size=UDim2.new(0,200,0,230);v1.Active=true;v1.Draggable=true;v6.Name="ScriptLabel";v6.Parent=v1;v6.BackgroundColor3=Color3.new(0.2,0.2,0.2);v6.BorderSizePixel=0;v6.Position=UDim2.new(0,0,0,0);v6.Size=UDim2.new(1,0,0,20);v6.Font=Enum.Font.SourceSans;v6.Text="Script by Surckre";v6.TextColor3=Color3.new(1,1,1);v6.TextSize=14;v6.TextStrokeTransparency=0.8;v3.Name="Slot";v3.Parent=v1;v3.BackgroundColor3=Color3.new(0.3,0.3,0.3);v3.BorderSizePixel=1;v3.Position=UDim2.new(0,10,0,30);v3.Size=UDim2.new(0,180,0,30);v3.Font=Enum.Font.SourceSans;v3.Text="Slot Number";v3.TextColor3=Color3.new(1,1,1);v3.TextSize=14;v4.Name="DelayBox";v4.Parent=v1;v4.BackgroundColor3=Color3.new(0.3,0.3,0.3);v4.BorderSizePixel=1;v4.Position=UDim2.new(0,10,0,70);v4.Size=UDim2.new(0,180,0,30);v4.Font=Enum.Font.SourceSans;v4.Text="Delay in Seconds";v4.TextColor3=Color3.new(1,1,1);v4.TextSize=14;v5.Name="DropAxesButton";v5.Parent=v1;v5.BackgroundColor3=Color3.new(0.3,0.3,0.3);v5.BorderSizePixel=1;v5.Position=UDim2.new(0,10,0,110);v5.Size=UDim2.new(0,180,0,30);v5.Font=Enum.Font.SourceSans;v5.Text="Drop Axes";v5.TextColor3=Color3.new(1,1,1);v5.TextSize=14;v2.Name="LoadSlot";v2.Parent=v1;v2.BackgroundColor3=Color3.new(0.3,0.3,0.3);v2.BorderSizePixel=1;v2.Position=UDim2.new(0,10,0,150);v2.Size=UDim2.new(0,180,0,30);v2.Font=Enum.Font.SourceSans;v2.Text="Start Dupe";v2.TextColor3=Color3.new(1,1,1);v2.TextSize=14;v7.Name="InventoryButton";v7.Parent=v1;v7.BackgroundColor3=Color3.new(0.3,0.3,0.3);v7.BorderSizePixel=1;v7.Position=UDim2.new(0,10,0,190);v7.Size=UDim2.new(0,180,0,30);v7.Font=Enum.Font.SourceSans;v7.Text="Count Axes";v7.TextColor3=Color3.new(1,1,1);v7.TextSize=14;local v82=false;local function v83(v90,v91,v92) game.StarterGui:SetCore("SendNotification",{Title=v90,Text=v91,Icon=nil,Duration=v92});end local function v84() local v93=tonumber(v3.Text);return (v93 and (v93>=1) and (v93<=6) and v93) or false ;end local function v85(v94) for v103,v104 in pairs(game.ReplicatedStorage.LoadSaveRequests.GetMetaData:InvokeServer(game.Players.LocalPlayer)) do if (v103==v94) then return (v104.NumSaves and (v104.NumSaves~=0)) or false ;end end return false;end local function v86() local v95=tonumber(v4.Text);return (v95 and (v95>0) and v95) or 2 ;end local function v87() local v96=0;for v105,v106 in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do if (v106:IsA("Tool") and (v106.Name~="BlueprintTool")) then game.ReplicatedStorage.Interaction.ClientInteracted:FireServer(v106,"Drop tool",game.Players.LocalPlayer.Character.Head.CFrame);v96=v96 + 1 ;wait(0.5);end end v83("Axes Dropped","Dropped "   .. v96   .. " Axes" ,5);end local function v88() local v97=game.Players.LocalPlayer;local v98=v97.Backpack;local v99= #v98:GetChildren();local v100=v99-1 ;v83("Axes in Inventory","Axes in Inventory: "   .. v100 ,5);end v2.MouseButton1Down:Connect(function() local v101=v84();local v102=v86();if v101 then if v85(v101) then v82=true;game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(10000,10,100));v83("Teleport Notification","Teleported to coordinates",2);wait(v102);local v109=game.ReplicatedStorage.LoadSaveRequests.RequestLoad:InvokeServer(v101);if v109 then v83("Reload Notification","Slot reloaded successfully",2);else v83("Reload Error","Failed to reload slot",2);end v82=false;else v83("Slot Not Available","Choose another slot",2);end else v83("Incorrect Slot","Enter a valid number (1-6) in the slot field",1);end end);v5.MouseButton1Down:Connect(function() v87();end);v7.MouseButton1Down:Connect(function() v88();end);local function v89() while true do for v107=0,1,0.01 do v1.BorderColor3=Color3.fromHSV(v107,0.7,1);wait(0.05);end end end spawn(v89);
+]]--
+
+bit32 = {};
+local N = 32;
+local P = 2 ^ N;
+bit32.bnot = function(x)
+	x = x % P;
+	return (P - 1) - x;
+end;
+bit32.band = function(x, y)
+	if (y == 255) then
+		return x % 256;
+	end
+	if (y == 65535) then
+		return x % 65536;
+	end
+	if (y == 4294967295) then
+		return x % 4294967296;
+	end
+	x, y = x % P, y % P;
+	local r = 0;
+	local p = 1;
+	for i = 1, N do
+		local a, b = x % 2, y % 2;
+		x, y = math.floor(x / 2), math.floor(y / 2);
+		if ((a + b) == 2) then
+			r = r + p;
+		end
+		p = 2 * p;
+	end
+	return r;
+end;
+bit32.bor = function(x, y)
+	if (y == 255) then
+		return (x - (x % 256)) + 255;
+	end
+	if (y == 65535) then
+		return (x - (x % 65536)) + 65535;
+	end
+	if (y == 4294967295) then
+		return 4294967295;
+	end
+	x, y = x % P, y % P;
+	local r = 0;
+	local p = 1;
+	for i = 1, N do
+		local a, b = x % 2, y % 2;
+		x, y = math.floor(x / 2), math.floor(y / 2);
+		if ((a + b) >= 1) then
+			r = r + p;
+		end
+		p = 2 * p;
+	end
+	return r;
+end;
+bit32.bxor = function(x, y)
+	x, y = x % P, y % P;
+	local r = 0;
+	local p = 1;
+	for i = 1, N do
+		local a, b = x % 2, y % 2;
+		x, y = math.floor(x / 2), math.floor(y / 2);
+		if ((a + b) == 1) then
+			r = r + p;
+		end
+		p = 2 * p;
+	end
+	return r;
+end;
+bit32.lshift = function(x, s_amount)
+	if (math.abs(s_amount) >= N) then
+		return 0;
+	end
+	x = x % P;
+	if (s_amount < 0) then
+		return math.floor(x * (2 ^ s_amount));
+	else
+		return (x * (2 ^ s_amount)) % P;
+	end
+end;
+bit32.rshift = function(x, s_amount)
+	if (math.abs(s_amount) >= N) then
+		return 0;
+	end
+	x = x % P;
+	if (s_amount > 0) then
+		return math.floor(x * (2 ^ -s_amount));
+	else
+		return (x * (2 ^ -s_amount)) % P;
+	end
+end;
+bit32.arshift = function(x, s_amount)
+	if (math.abs(s_amount) >= N) then
+		return 0;
+	end
+	x = x % P;
+	if (s_amount > 0) then
+		local add = 0;
+		if (x >= (P / 2)) then
+			add = P - (2 ^ (N - s_amount));
+		end
+		return math.floor(x * (2 ^ -s_amount)) + add;
+	else
+		return (x * (2 ^ -s_amount)) % P;
+	end
+end;
+local ScreenGui = Instance.new("ScreenGui");
+local MainFrame = Instance.new("Frame");
+local LoadSlot = Instance.new("TextButton");
+local Slot = Instance.new("TextBox");
+local DelayBox = Instance.new("TextBox");
+local DropAxesButton = Instance.new("TextButton");
+local ScriptLabel = Instance.new("TextLabel");
+local InventoryButton = Instance.new("TextButton");
+ScreenGui.Parent = game.CoreGui;
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
+MainFrame.Name = "LT2SimpleGui";
+MainFrame.Parent = ScreenGui;
+MainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1);
+MainFrame.BorderSizePixel = 2;
+MainFrame.Position = UDim2.new(0.5, -100, 0.5, -220);
+MainFrame.Size = UDim2.new(0, 200, 0, 230);
+MainFrame.Active = true;
+MainFrame.Draggable = true;
+ScriptLabel.Name = "ScriptLabel";
+ScriptLabel.Parent = MainFrame;
+ScriptLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2);
+ScriptLabel.BorderSizePixel = 0;
+ScriptLabel.Position = UDim2.new(0, 0, 0, 0);
+ScriptLabel.Size = UDim2.new(1, 0, 0, 20);
+ScriptLabel.Font = Enum.Font.SourceSans;
+ScriptLabel.Text = "Script by Surckre";
+ScriptLabel.TextColor3 = Color3.new(1, 1, 1);
+ScriptLabel.TextSize = 14;
+ScriptLabel.TextStrokeTransparency = 0.8;
+Slot.Name = "Slot";
+Slot.Parent = MainFrame;
+Slot.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3);
+Slot.BorderSizePixel = 1;
+Slot.Position = UDim2.new(0, 10, 0, 30);
+Slot.Size = UDim2.new(0, 180, 0, 30);
+Slot.Font = Enum.Font.SourceSans;
+Slot.Text = "Slot Number";
+Slot.TextColor3 = Color3.new(1, 1, 1);
+Slot.TextSize = 14;
+DelayBox.Name = "DelayBox";
+DelayBox.Parent = MainFrame;
+DelayBox.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3);
+DelayBox.BorderSizePixel = 1;
+DelayBox.Position = UDim2.new(0, 10, 0, 70);
+DelayBox.Size = UDim2.new(0, 180, 0, 30);
+DelayBox.Font = Enum.Font.SourceSans;
+DelayBox.Text = "Delay in Seconds";
+DelayBox.TextColor3 = Color3.new(1, 1, 1);
+DelayBox.TextSize = 14;
+DropAxesButton.Name = "DropAxesButton";
+DropAxesButton.Parent = MainFrame;
+DropAxesButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3);
+DropAxesButton.BorderSizePixel = 1;
+DropAxesButton.Position = UDim2.new(0, 10, 0, 110);
+DropAxesButton.Size = UDim2.new(0, 180, 0, 30);
+DropAxesButton.Font = Enum.Font.SourceSans;
+DropAxesButton.Text = "Drop Axes";
+DropAxesButton.TextColor3 = Color3.new(1, 1, 1);
+DropAxesButton.TextSize = 14;
+LoadSlot.Name = "LoadSlot";
+LoadSlot.Parent = MainFrame;
+LoadSlot.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3);
+LoadSlot.BorderSizePixel = 1;
+LoadSlot.Position = UDim2.new(0, 10, 0, 150);
+LoadSlot.Size = UDim2.new(0, 180, 0, 30);
+LoadSlot.Font = Enum.Font.SourceSans;
+LoadSlot.Text = "Start Dupe";
+LoadSlot.TextColor3 = Color3.new(1, 1, 1);
+LoadSlot.TextSize = 14;
+InventoryButton.Name = "InventoryButton";
+InventoryButton.Parent = MainFrame;
+InventoryButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3);
+InventoryButton.BorderSizePixel = 1;
+InventoryButton.Position = UDim2.new(0, 10, 0, 190);
+InventoryButton.Size = UDim2.new(0, 180, 0, 30);
+InventoryButton.Font = Enum.Font.SourceSans;
+InventoryButton.Text = "Count Axes";
+InventoryButton.TextColor3 = Color3.new(1, 1, 1);
+InventoryButton.TextSize = 14;
+local ScriptLoadOrSave = false;
+local function SendNotification(Title, Text, Duration)
+	game.StarterGui:SetCore("SendNotification", {Title=Title,Text=Text,Icon=nil,Duration=Duration});
+end
+local function CheckSlotNumber()
+	local SlotNumber = tonumber(Slot.Text);
+	return (SlotNumber and (SlotNumber >= 1) and (SlotNumber <= 6) and SlotNumber) or false;
+end
+local function CheckIfSlotAvailable(Slot)
+	for a, b in pairs(game.ReplicatedStorage.LoadSaveRequests.GetMetaData:InvokeServer(game.Players.LocalPlayer)) do
+		if (a == Slot) then
+			return (b.NumSaves and (b.NumSaves ~= 0)) or false;
+		end
+	end
+	return false;
+end
+local function GetDelay()
+	local Delay = tonumber(DelayBox.Text);
+	return (Delay and (Delay > 0) and Delay) or 2;
+end
+local function DropAllAxes()
+	local axesDropped = 0;
+	for _, axe in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+		if (axe:IsA("Tool") and (axe.Name ~= "BlueprintTool")) then
+			game.ReplicatedStorage.Interaction.ClientInteracted:FireServer(axe, "Drop tool", game.Players.LocalPlayer.Character.Head.CFrame);
+			axesDropped = axesDropped + 1;
+			wait(0.5);
+		end
+	end
+	SendNotification("Axes Dropped", "Dropped " .. axesDropped .. " Axes", 5);
+end
+local function ShowAndReduceInventory()
+	local player = game.Players.LocalPlayer;
+	local backpack = player.Backpack;
+	local itemCount = #backpack:GetChildren();
+	local reducedCount = itemCount - 1;
+	SendNotification("Axes in Inventory", "Axes in Inventory: " .. reducedCount, 5);
+end
+LoadSlot.MouseButton1Down:Connect(function()
+	local CheckSlot = CheckSlotNumber();
+	local Delay = GetDelay();
+	if CheckSlot then
+		if CheckIfSlotAvailable(CheckSlot) then
+			ScriptLoadOrSave = true;
+			game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(10000, 10, 100));
+			SendNotification("Teleport Notification", "Teleported to coordinates", 2);
+			wait(Delay);
+			local result = game.ReplicatedStorage.LoadSaveRequests.RequestLoad:InvokeServer(CheckSlot);
+			if result then
+				SendNotification("Reload Notification", "Slot reloaded successfully", 2);
+			else
+				SendNotification("Reload Error", "Failed to reload slot", 2);
+			end
+			ScriptLoadOrSave = false;
+		else
+			SendNotification("Slot Not Available", "Choose another slot", 2);
+		end
+	else
+		SendNotification("Incorrect Slot", "Enter a valid number (1-6) in the slot field", 1);
+	end
+end);
+DropAxesButton.MouseButton1Down:Connect(function()
+	DropAllAxes();
+end);
+InventoryButton.MouseButton1Down:Connect(function()
+	ShowAndReduceInventory();
+end);
+local function ChangeBorderColor()
+	while true do
+		for i = 0, 1, 0.01 do
+			MainFrame.BorderColor3 = Color3.fromHSV(i, 0.7, 1);
+			wait(0.05);
+		end
+	end
+end
+spawn(ChangeBorderColor);
