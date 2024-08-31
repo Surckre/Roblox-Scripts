@@ -18,7 +18,7 @@ MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1) -- Dark background
 MainFrame.BorderSizePixel = 2
 MainFrame.Position = UDim2.new(0.5, -100, 0.5, -220)
-MainFrame.Size = UDim2.new(0, 200, 0, 220) -- Adjusted size to fit new button
+MainFrame.Size = UDim2.new(0, 200, 0, 230) -- Adjusted size to fit new button
 MainFrame.Active = true
 MainFrame.Draggable = true
 
